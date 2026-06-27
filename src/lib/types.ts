@@ -46,7 +46,7 @@ export interface SplitState {
 export function emptyState(): SplitState {
   return {
     title: "",
-    currency: "JPY",
+    currency: "USD",
     members: [],
     expenses: [],
   };

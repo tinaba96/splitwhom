@@ -2,23 +2,23 @@
 
 import { type Dispatch, type SetStateAction, useState } from "react";
 import type { SplitState } from "@/lib/types";
+import type { Dictionary } from "@/i18n/types";
 import { makeId } from "@/lib/format";
+import { fill } from "@/lib/interpolate";
 
 interface Props {
+  t: Dictionary;
   state: SplitState;
   setState: Dispatch<SetStateAction<SplitState>>;
 }
 
-export default function MembersSection({ state, setState }: Props) {
+export default function MembersSection({ t, state, setState }: Props) {
   const [name, setName] = useState("");
 
   const addMember = () => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    setState((s) => ({
-      ...s,
-      members: [...s.members, { id: makeId(), name: trimmed }],
-    }));
+    setState((s) => ({ ...s, members: [...s.members, { id: makeId(), name: trimmed }] }));
     setName("");
   };
 
@@ -27,9 +27,7 @@ export default function MembersSection({ state, setState }: Props) {
     const paidCount = state.expenses.filter((e) => e.payerId === id).length;
     if (
       paidCount > 0 &&
-      !window.confirm(
-        `This also deletes ${paidCount} payment(s) made by ${m?.name}. Continue?`,
-      )
+      !window.confirm(fill(t.members.confirmDelete, { count: paidCount, name: m?.name ?? "" }))
     ) {
       return;
     }
@@ -45,9 +43,9 @@ export default function MembersSection({ state, setState }: Props) {
   return (
     <section className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5">
       <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-base font-semibold">Members</h2>
+        <h2 className="text-base font-semibold">{t.members.title}</h2>
         <span className="text-xs text-muted">
-          {state.members.length} {state.members.length === 1 ? "person" : "people"}
+          {state.members.length} {t.members.peopleLabel}
         </span>
       </div>
 
@@ -58,19 +56,19 @@ export default function MembersSection({ state, setState }: Props) {
           onKeyDown={(e) => {
             if (e.key === "Enter") addMember();
           }}
-          placeholder="Add a name"
+          placeholder={t.members.addPlaceholder}
           className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand"
         />
         <button
           onClick={addMember}
           className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
         >
-          Add
+          {t.members.add}
         </button>
       </div>
 
       {state.members.length === 0 ? (
-        <p className="mt-3 text-sm text-muted">Add everyone who shared the costs.</p>
+        <p className="mt-3 text-sm text-muted">{t.members.empty}</p>
       ) : (
         <ul className="mt-3 flex flex-wrap gap-2">
           {state.members.map((m) => (
@@ -81,7 +79,7 @@ export default function MembersSection({ state, setState }: Props) {
               <span>{m.name}</span>
               <button
                 onClick={() => removeMember(m.id)}
-                aria-label={`Remove ${m.name}`}
+                aria-label={fill(t.members.removeAria, { name: m.name })}
                 className="grid h-5 w-5 place-items-center rounded-full text-muted hover:bg-negative hover:text-white"
               >
                 ×

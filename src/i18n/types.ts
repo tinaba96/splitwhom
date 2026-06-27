@@ -1,0 +1,98 @@
+// Shape of a SplitWhom translation dictionary. Every locale provides one of these.
+// Keys are grouped by where they appear. The brand name "SplitWhom" is never translated.
+
+export interface Dictionary {
+  /** <head> metadata for this locale */
+  meta: {
+    title: string;
+    description: string;
+    keywords: string[];
+    ogTitle: string;
+    ogDescription: string;
+  };
+  /** hero / header */
+  hero: {
+    tagline: string; // one-line pitch under the brand
+  };
+  /** event + currency row */
+  setup: {
+    eventName: string;
+    eventPlaceholder: string;
+    currency: string;
+  };
+  members: {
+    title: string;
+    addPlaceholder: string;
+    add: string;
+    empty: string;
+    /** "{name}" is replaced with the member name */
+    removeAria: string;
+    /** "{count}" and "{name}" are replaced */
+    confirmDelete: string;
+    /** noun shown next to the count, e.g. "people" */
+    peopleLabel: string;
+  };
+  payments: {
+    title: string;
+    itemsLabel: string; // noun next to the count, e.g. "items"
+    addMembersFirst: string;
+    paidBy: string;
+    description: string;
+    descPlaceholder: string;
+    amount: string;
+    splitBetween: string;
+    selectAll: string;
+    clearAll: string;
+    addPayment: string;
+    paidFor: string; // connector: "{payer} paid for {desc}"
+    splitEveryone: string;
+    /** "{names}" replaced with a joined participant list */
+    splitBetweenNames: string;
+    deleteAria: string;
+    removed: string; // label for a deleted member referenced by an expense
+  };
+  results: {
+    emptyPrompt: string;
+    settlementTitle: string;
+    total: string; // "{amount}" replaced
+    allSettled: string;
+    balancesTitle: string;
+    member: string;
+    paid: string;
+    share: string;
+    net: string;
+    legendPositive: string; // word styled green
+    legendNegative: string; // word styled red
+    legendPositiveDesc: string; // "= gets money back"
+    legendNegativeDesc: string; // "= owes money"
+  };
+  footer: {
+    loadSample: string;
+    reset: string;
+    confirmSample: string;
+    confirmReset: string;
+  };
+  /** sample dataset (names + item labels) */
+  sample: {
+    title: string;
+    names: [string, string, string, string, string];
+    food: string;
+    drinks: string;
+    firewood: string;
+  };
+  /** SEO landing content rendered as static HTML */
+  landing: {
+    heroHeading: string;
+    heroSub: string;
+    howItWorksTitle: string;
+    steps: { title: string; body: string }[];
+    whyTitle: string;
+    features: { title: string; body: string }[];
+    faqTitle: string;
+    faqs: { q: string; a: string }[];
+  };
+  /** language switcher */
+  switcher: {
+    label: string;
+  };
+}

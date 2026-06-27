@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SITE_URL } from "@/i18n/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,25 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "SplitWhom — split the bill & see who pays whom",
   description:
-    "Free, no-login web app that splits group expenses and shows exactly who pays whom in the fewest payments. Perfect for trips, camping, and shared houses.",
-  keywords: [
-    "split the bill",
-    "split expenses",
-    "bill splitter",
-    "who pays whom",
-    "settle up",
-    "group expenses",
-    "expense splitter",
-    "split costs",
-  ],
-  openGraph: {
-    title: "SplitWhom — split the bill & see who pays whom",
-    description:
-      "Split group expenses and settle up in the fewest payments. No sign-up, free, works in your browser.",
-    type: "website",
-  },
+    "Free, no-login web app that splits group expenses and shows who pays whom in the fewest payments.",
 };
 
 export default function RootLayout({
@@ -39,6 +25,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // <html lang> defaults to "en"; non-default locale pages correct it via LangSync.
   return (
     <html
       lang="en"
