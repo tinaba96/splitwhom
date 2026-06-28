@@ -153,4 +153,13 @@ export const en: Dictionary = {
   switcher: {
     label: "Language",
   },
+  share: {
+    share: "Share",
+    copied: "Link copied!",
+    edit: "Edit",
+    readonlyNote: "Shared result · view only",
+    invalid: "This shared link is invalid or empty.",
+    ctaTitle: "Split your own group expenses",
+    ctaButton: "Open SplitWhom",
+  },
 };

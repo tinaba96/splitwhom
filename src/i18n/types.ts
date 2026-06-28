@@ -101,4 +101,14 @@ export interface Dictionary {
   switcher: {
     label: string;
   };
+  /** share link + view-only page */
+  share: {
+    share: string; // share button
+    copied: string; // confirmation after copying the link
+    edit: string; // edit button on the shared view
+    readonlyNote: string; // small label indicating the view is read-only
+    invalid: string; // shown when the shared link can't be decoded
+    ctaTitle: string; // funnel heading on the shared view
+    ctaButton: string; // funnel button to open the editor
+  };
 }

@@ -32,7 +32,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         <p className="text-base text-muted">{l.heroSub}</p>
       </header>
 
-      <SplitApp t={t} />
+      <SplitApp t={t} locale={locale} />
 
       <LandingSections t={t} />
 

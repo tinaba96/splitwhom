@@ -6,9 +6,11 @@ import { settle } from "@/lib/settle";
 import { formatMinor, makeId } from "@/lib/format";
 import { useSplitState } from "@/lib/store";
 import type { Dictionary } from "@/i18n/types";
+import type { Locale } from "@/i18n/config";
 import MembersSection from "./MembersSection";
 import ExpensesSection from "./ExpensesSection";
 import ResultsSection from "./ResultsSection";
+import ShareButton from "./ShareButton";
 
 function sampleState(t: Dictionary): SplitState {
   const ids = t.sample.names.map((name) => ({ id: makeId(), name }));
@@ -25,7 +27,7 @@ function sampleState(t: Dictionary): SplitState {
   };
 }
 
-export default function SplitApp({ t }: { t: Dictionary }) {
+export default function SplitApp({ t, locale }: { t: Dictionary; locale: Locale }) {
   const [state, setState] = useSplitState();
 
   const result = useMemo(() => settle(state), [state]);
@@ -66,6 +68,12 @@ export default function SplitApp({ t }: { t: Dictionary }) {
       <MembersSection t={t} state={state} setState={setState} />
       <ExpensesSection t={t} state={state} setState={setState} fmt={fmt} />
       <ResultsSection t={t} state={state} result={result} fmt={fmt} totalMinor={totalMinor} />
+
+      {state.expenses.length > 0 && (
+        <div className="flex justify-center">
+          <ShareButton t={t} state={state} locale={locale} />
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted">
         <button
