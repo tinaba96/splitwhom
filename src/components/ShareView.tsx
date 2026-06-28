@@ -17,6 +17,7 @@ import { formatMinor } from "@/lib/format";
 import { decodeShare } from "@/lib/share";
 import { setSplitState } from "@/lib/store";
 import ResultsSection from "./ResultsSection";
+import MemberContacts from "./MemberContacts";
 import PaymentDetails from "./PaymentDetails";
 import LangSync from "./LangSync";
 import ShareButton from "./ShareButton";
@@ -83,6 +84,8 @@ export default function ShareView() {
       {state.title && <h1 className="text-2xl font-bold tracking-tight">{state.title}</h1>}
 
       <ResultsSection t={t} state={state} result={result} fmt={fmt} totalMinor={totalMinor} />
+
+      <MemberContacts t={t} state={state} />
 
       <PaymentDetails t={t} state={state} fmt={fmt} />
 

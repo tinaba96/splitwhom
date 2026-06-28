@@ -36,6 +36,10 @@ export const en: Dictionary = {
     removeAria: "Remove {name}",
     confirmDelete: "This also deletes {count} payment(s) made by {name}. Continue?",
     peopleLabel: "people",
+    notePlaceholder: "Email / phone / payment ID (optional)",
+    contactsTitle: "Members & payment info",
+    copy: "Copy",
+    copied: "Copied!",
   },
   payments: {
     title: "Payments",

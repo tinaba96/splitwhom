@@ -31,6 +31,10 @@ export interface Dictionary {
     confirmDelete: string;
     /** noun shown next to the count, e.g. "people" */
     peopleLabel: string;
+    notePlaceholder: string; // optional note input (email/phone/payment id)
+    contactsTitle: string; // view: collapsible members + payment info section
+    copy: string; // copy button / aria-label
+    copied: string; // copy confirmation
   };
   payments: {
     title: string;

@@ -8,7 +8,7 @@ function normalize(s: SplitState) {
   return {
     title: s.title,
     currency: s.currency,
-    members: s.members.map((m) => m.name),
+    members: s.members.map((m) => ({ name: m.name, note: m.note })),
     expenses: s.expenses.map((e) => ({
       payer: nameOf(e.payerId),
       description: e.description,
@@ -25,9 +25,9 @@ const sample: SplitState = {
   title: "Camping trip",
   currency: "CAD",
   members: [
-    { id: "a", name: "Alex" },
+    { id: "a", name: "Alex", note: "alex@example.com" },
     { id: "b", name: "Ben" },
-    { id: "c", name: "Chloe" },
+    { id: "c", name: "Chloe", note: "@chloe-paypay" },
   ],
   expenses: [
     { id: "1", payerId: "a", description: "Board", amount: 600, participantIds: ["a", "b", "c"] },

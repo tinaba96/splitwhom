@@ -23,6 +23,8 @@ export const CURRENCIES: Record<CurrencyCode, Currency> = {
 export interface Member {
   id: string;
   name: string;
+  /** optional free-text note: email, phone, or a payment ID used to send money */
+  note?: string;
 }
 
 export interface Expense {

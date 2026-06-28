@@ -13,6 +13,7 @@ interface Wire {
   c: CurrencyCode;
   l: Locale;
   m: string[]; // member names (index = member id)
+  mn?: string[]; // member notes, aligned by index (omitted when none)
   e: WireExpense[];
 }
 interface WireExpense {
@@ -37,6 +38,9 @@ export function encodeShare(state: SplitState, locale: Locale): string {
     c: state.currency,
     l: locale,
     m: state.members.map((m) => m.name),
+    ...(state.members.some((m) => m.note)
+      ? { mn: state.members.map((m) => m.note ?? "") }
+      : {}),
     e: state.expenses.map((exp) => {
       const w: WireExpense = {
         p: index.get(exp.payerId) ?? 0,
@@ -73,7 +77,10 @@ export function decodeShare(encoded: string): SharedSplit | null {
     const ids = wire.m.map(() => makeId());
     const idOf = (i: number) => ids[i];
 
-    const members = wire.m.map((name, i) => ({ id: ids[i], name: String(name) }));
+    const members = wire.m.map((name, i) => {
+      const note = wire.mn?.[i];
+      return { id: ids[i], name: String(name), ...(note ? { note: String(note) } : {}) };
+    });
 
     const expenses: Expense[] = wire.e
       .map((w) => {
