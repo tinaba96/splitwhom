@@ -28,6 +28,9 @@
 /.omc/
 /.claude/
 
+# generated at build from NEXT_PUBLIC_ADSENSE_CLIENT
+/public/ads.txt
+
 # debug
 npm-debug.log*
 yarn-debug.log*

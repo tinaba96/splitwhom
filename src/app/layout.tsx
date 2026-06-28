@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 import "./globals.css";
 import { SITE_URL } from "@/i18n/config";
 
 // Google Analytics 4 measurement id; analytics only load when it's configured.
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+// Google AdSense client id (ca-pub-...); ads only load when it's configured.
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +25,8 @@ export const metadata: Metadata = {
   title: "SplitWhom — split the bill & see who pays whom",
   description:
     "Free, no-login web app that splits group expenses and shows who pays whom in the fewest payments.",
+  // AdSense site verification meta (only when configured)
+  ...(ADSENSE_CLIENT ? { other: { "google-adsense-account": ADSENSE_CLIENT } } : {}),
 };
 
 export default function RootLayout({
@@ -37,6 +42,14 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">{children}</body>
       {GA_ID ? <GoogleAnalytics gaId={GA_ID} /> : null}
+      {ADSENSE_CLIENT ? (
+        <Script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      ) : null}
     </html>
   );
 }
