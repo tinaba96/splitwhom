@@ -51,7 +51,19 @@ export const LOCALE_BCP47: Record<Locale, string> = {
   ru: "ru",
 };
 
-export const SITE_URL = "https://splitwhom.com";
+// Resolve the absolute site URL used for canonical/hreflang/OG/sitemap. Falls back
+// to the deployment URL so OG images work on any domain (vercel.app / pages.dev),
+// and defaults to the production brand domain.
+function resolveSiteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return explicit.replace(/\/+$/, "");
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL)
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  if (process.env.CF_PAGES_URL) return process.env.CF_PAGES_URL.replace(/\/+$/, "");
+  return "https://splitwhom.com";
+}
+
+export const SITE_URL = resolveSiteUrl();
 
 export function isLocale(value: string): value is Locale {
   return (LOCALES as readonly string[]).includes(value);
