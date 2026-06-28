@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { encodeShare, decodeShare } from "./share";
+import { encodeShare, decodeShare, buildShareUrl } from "./share";
 import type { SplitState } from "./types";
 
 // Compare two states by structure (ids are regenerated on decode, so map them to names).
@@ -66,5 +66,14 @@ describe("share encode/decode", () => {
   it("returns null for invalid or empty input", () => {
     expect(decodeShare("")).toBeNull();
     expect(decodeShare("not-valid-data!!!")).toBeNull();
+  });
+
+  it("builds a share URL with the locale in the path (for localized OG)", () => {
+    expect(buildShareUrl("https://splitwhom.com", sample, "en")).toMatch(
+      /^https:\/\/splitwhom\.com\/view\/#/,
+    );
+    expect(buildShareUrl("https://splitwhom.com", sample, "ja")).toMatch(
+      /^https:\/\/splitwhom\.com\/ja\/view\/#/,
+    );
   });
 });

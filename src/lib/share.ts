@@ -3,7 +3,7 @@
 
 import LZString from "lz-string";
 import { CURRENCIES, type CurrencyCode, type Expense, type SplitState } from "./types";
-import { type Locale, isLocale } from "../i18n/config";
+import { type Locale, isLocale, localePath } from "../i18n/config";
 import { makeId } from "./format";
 
 // Compact wire format (short keys, member indices instead of long ids) to keep URLs short.
@@ -117,7 +117,9 @@ export function decodeShare(encoded: string): SharedSplit | null {
   }
 }
 
-/** Build a full /view share URL for the current origin. */
+/** Build a full share URL for the current origin. The locale is in the path
+ *  (e.g. /ja/view/) so crawlers can serve a localized OG preview; the data is
+ *  in the hash. */
 export function buildShareUrl(origin: string, state: SplitState, locale: Locale): string {
-  return `${origin}/view/#${encodeShare(state, locale)}`;
+  return `${origin}${localePath(locale)}view/#${encodeShare(state, locale)}`;
 }
