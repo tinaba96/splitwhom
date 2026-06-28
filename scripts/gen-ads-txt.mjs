@@ -2,7 +2,7 @@
 // domain is authorized to sell ads. Runs automatically before `next build`.
 import { writeFile, rm } from "node:fs/promises";
 
-const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT; // e.g. ca-pub-1234567890123456
+const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-1223705954567263";
 const path = "public/ads.txt";
 
 if (client && /^ca-pub-\d+$/.test(client)) {

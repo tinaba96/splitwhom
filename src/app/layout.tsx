@@ -7,8 +7,9 @@ import { SITE_URL } from "@/i18n/config";
 
 // Google Analytics 4 measurement id; analytics only load when it's configured.
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
-// Google AdSense client id (ca-pub-...); ads only load when it's configured.
-const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+// Google AdSense client id (ca-pub-...). Public by nature; defaults to the
+// production account, overridable via env for forks.
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? "ca-pub-1223705954567263";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
