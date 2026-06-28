@@ -152,6 +152,37 @@ export const en: Dictionary = {
         q: "Is my data private?",
         a: "Yes. There is no login and no server. All calculations happen in your browser and your data is saved only on your device.",
       },
+      {
+        q: "Can I cap how much one person pays?",
+        a: "Yes. For any payment you can set a maximum (cap) for specific people; they pay at most that amount and the rest is shared among the others.",
+      },
+      {
+        q: "Can I share the result with my group?",
+        a: "Yes. Tap Share to copy a link that opens a read-only summary of who pays whom. The data is encoded in the link itself — nothing is stored on a server.",
+      },
+      {
+        q: "Does it work on my phone?",
+        a: "Yes. SplitWhom runs in any modern mobile or desktop browser — there's no app to install.",
+      },
+    ],
+    useCasesTitle: "Made for real-life group costs",
+    useCases: [
+      {
+        title: "Camping & outdoor trips",
+        body: "One person buys the food, another the firewood, a third the gear — SplitWhom evens it all out in the fewest payments.",
+      },
+      {
+        title: "Travel & vacations",
+        body: "Hotels, taxis, and dinners paid by different people across the trip? Settle the whole thing at the end with one clear list.",
+      },
+      {
+        title: "Shared houses & roommates",
+        body: "Split groceries, utilities, and supplies — and choose exactly who shares each expense.",
+      },
+      {
+        title: "Parties, BBQs & group dinners",
+        body: "When several people chip in for a get-together, see at a glance who owes whom.",
+      },
     ],
   },
   switcher: {
@@ -165,5 +196,107 @@ export const en: Dictionary = {
     invalid: "This shared link is invalid or empty.",
     ctaTitle: "Split your own group expenses",
     ctaButton: "Open SplitWhom",
+  },
+  site: {
+    footerTagline: "Split the bill and see who pays whom — free and no sign-up.",
+    privacy: "Privacy Policy",
+    terms: "Terms of Service",
+    about: "About",
+    contact: "Contact",
+    rights: "All rights reserved.",
+  },
+  privacy: {
+    title: "Privacy Policy",
+    updatedLabel: "Last updated",
+    intro:
+      "This Privacy Policy explains how SplitWhom handles information when you use the site at splitwhom.com. SplitWhom has no user accounts and no server-side database — the split you create stays in your own browser.",
+    sections: [
+      {
+        heading: "Information you enter",
+        body: "The members, payments, and notes you type are stored only in your browser's local storage on your device. They are not transmitted to or stored on our servers, because SplitWhom has no backend database.",
+      },
+      {
+        heading: "Shared links",
+        body: "When you create a Share link, the split data is compressed and encoded inside the link's URL fragment (after the # symbol). It is not sent to any server. Anyone you give the link to can view that data, so only share it with people you intend to.",
+      },
+      {
+        heading: "Cookies and local storage",
+        body: "SplitWhom itself uses your browser's local storage to remember your current split. We do not set our own tracking cookies. However, the third-party services below may set cookies in your browser.",
+      },
+      {
+        heading: "Analytics",
+        body: "We use Google Analytics 4 to understand how the site is used (for example, page views and general location). Google may set cookies and process this data in accordance with its own policies. For details, see Google's Privacy Policy at policies.google.com/privacy.",
+      },
+      {
+        heading: "Advertising",
+        body: "We use Google AdSense to display ads. Third-party vendors, including Google, use cookies to serve ads based on your prior visits to this and other websites. Google's use of advertising cookies enables it and its partners to serve ads to you. You can opt out of personalized advertising by visiting Google's Ads Settings at adsettings.google.com, or opt out of third-party vendors' use of cookies at aboutads.info.",
+      },
+      {
+        heading: "Consent in the EEA, UK and Switzerland",
+        body: "If you are in the European Economic Area, the United Kingdom, or Switzerland, a consent message is shown so you can choose how your data is used for ads, as required by applicable law.",
+      },
+      {
+        heading: "Children",
+        body: "SplitWhom is not directed to children under 13, and we do not knowingly collect personal information from them.",
+      },
+      {
+        heading: "Your choices",
+        body: "You can clear your data at any time by using the Reset button or clearing your browser storage, decline or manage ad personalization through the controls above, and use a browser ad/tracker blocker if you prefer.",
+      },
+      {
+        heading: "Changes to this policy",
+        body: "We may update this policy from time to time. Material changes will be reflected by the date shown above.",
+      },
+      {
+        heading: "Contact",
+        body: "If you have questions about this policy, contact us at contact@splitwhom.com.",
+      },
+    ],
+  },
+  terms: {
+    title: "Terms of Service",
+    updatedLabel: "Last updated",
+    intro:
+      "By using SplitWhom at splitwhom.com, you agree to these terms. If you do not agree, please do not use the site.",
+    sections: [
+      {
+        heading: "The service",
+        body: "SplitWhom is a free tool that helps groups split shared expenses and see who pays whom. It requires no account and runs in your browser.",
+      },
+      {
+        heading: "Use at your own discretion",
+        body: "SplitWhom is provided for convenience. Always review the results before transferring money. You are responsible for how you use the calculations and for any payments you make.",
+      },
+      {
+        heading: "No warranty",
+        body: 'The service is provided "as is" and "as available", without warranties of any kind, whether express or implied, including accuracy, fitness for a particular purpose, or uninterrupted availability.',
+      },
+      {
+        heading: "Limitation of liability",
+        body: "To the maximum extent permitted by law, SplitWhom and its operator are not liable for any indirect, incidental, or consequential damages, or for any loss arising from your use of the site.",
+      },
+      {
+        heading: "Acceptable use",
+        body: "Do not use the site for any unlawful purpose or in a way that could damage, disable, or impair it.",
+      },
+      {
+        heading: "Changes",
+        body: "We may update these terms or the service at any time. Continued use after changes means you accept the updated terms.",
+      },
+      {
+        heading: "Contact",
+        body: "Questions about these terms? Contact us at contact@splitwhom.com.",
+      },
+    ],
+  },
+  about: {
+    title: "About SplitWhom",
+    paragraphs: [
+      "SplitWhom is a free, no-login web app that makes splitting shared group expenses simple. Instead of just showing balances, it calculates the fewest payments needed so everyone ends up even — perfect for trips, camping, shared houses, and parties.",
+      "It's built to be private by design: there are no accounts and no server-side database. Every calculation runs in your browser, and your data stays on your device unless you choose to share a link.",
+      "SplitWhom is available in many languages and is free to use, supported by ads.",
+    ],
+    contactHeading: "Contact",
+    contactBody: "Questions, feedback, or ideas? Reach us at",
   },
 };

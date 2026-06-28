@@ -37,6 +37,20 @@ export default function LandingSections({ t }: { t: Dictionary }) {
         </div>
       </section>
 
+      <section aria-labelledby="use-cases">
+        <h2 id="use-cases" className="mb-4 text-lg font-bold tracking-tight">
+          {l.useCasesTitle}
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {l.useCases.map((u, i) => (
+            <div key={i} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+              <h3 className="text-sm font-semibold">{u.title}</h3>
+              <p className="mt-1 text-sm text-muted">{u.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section aria-labelledby="faq">
         <h2 id="faq" className="mb-4 text-lg font-bold tracking-tight">
           {l.faqTitle}

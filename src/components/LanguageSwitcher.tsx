@@ -3,7 +3,15 @@ import { LOCALES, LOCALE_NAMES, type Locale, localePath } from "@/i18n/config";
 
 // Server-rendered, JS-free dropdown of crawlable locale links (good for hreflang
 // discovery). Uses <details> so it works without client JavaScript.
-export default function LanguageSwitcher({ current, label }: { current: Locale; label: string }) {
+export default function LanguageSwitcher({
+  current,
+  label,
+  subpath = "",
+}: {
+  current: Locale;
+  label: string;
+  subpath?: string; // e.g. "privacy/" to keep the same page when switching locale
+}) {
   return (
     <details className="group relative">
       <summary
@@ -18,7 +26,7 @@ export default function LanguageSwitcher({ current, label }: { current: Locale; 
         {LOCALES.map((locale) => (
           <li key={locale}>
             <Link
-              href={localePath(locale)}
+              href={`${localePath(locale)}${subpath}`}
               hrefLang={locale}
               className={
                 "block rounded-md px-3 py-1.5 text-sm hover:bg-background " +

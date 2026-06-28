@@ -100,6 +100,8 @@ export interface Dictionary {
     features: { title: string; body: string }[];
     faqTitle: string;
     faqs: { q: string; a: string }[];
+    useCasesTitle: string;
+    useCases: { title: string; body: string }[];
   };
   /** language switcher */
   switcher: {
@@ -114,5 +116,35 @@ export interface Dictionary {
     invalid: string; // shown when the shared link can't be decoded
     ctaTitle: string; // funnel heading on the shared view
     ctaButton: string; // funnel button to open the editor
+  };
+  /** site-wide footer + nav to legal/info pages */
+  site: {
+    footerTagline: string;
+    privacy: string;
+    terms: string;
+    about: string;
+    contact: string;
+    rights: string; // e.g. "All rights reserved." (year + brand added in code)
+  };
+  /** /privacy page */
+  privacy: {
+    title: string;
+    updatedLabel: string; // "Last updated"
+    intro: string;
+    sections: { heading: string; body: string }[];
+  };
+  /** /terms page */
+  terms: {
+    title: string;
+    updatedLabel: string;
+    intro: string;
+    sections: { heading: string; body: string }[];
+  };
+  /** /about page */
+  about: {
+    title: string;
+    paragraphs: string[];
+    contactHeading: string;
+    contactBody: string; // text before the contact email (appended in code)
   };
 }

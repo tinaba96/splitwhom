@@ -4,7 +4,9 @@ import SplitApp from "./SplitApp";
 import LandingSections from "./LandingSections";
 import LanguageSwitcher from "./LanguageSwitcher";
 import StructuredData from "./StructuredData";
+import SiteFooter from "./SiteFooter";
 import LangSync from "./LangSync";
+import AdUnit from "./AdUnit";
 
 // The full localized home page (shared by the root `/` and every `/<locale>/`).
 export default function HomePage({ locale }: { locale: Locale }) {
@@ -36,9 +38,9 @@ export default function HomePage({ locale }: { locale: Locale }) {
 
       <LandingSections t={t} />
 
-      <footer className="mt-2 border-t border-border pt-6 text-xs text-muted">
-        SplitWhom — {t.meta.ogDescription}
-      </footer>
+      <AdUnit slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME} />
+
+      <SiteFooter t={t} locale={locale} />
 
       <StructuredData t={t} locale={locale} />
     </main>

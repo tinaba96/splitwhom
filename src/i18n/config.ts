@@ -65,6 +65,8 @@ function resolveSiteUrl(): string {
 
 export const SITE_URL = resolveSiteUrl();
 
+export const CONTACT_EMAIL = "contact@splitwhom.com";
+
 export function isLocale(value: string): value is Locale {
   return (LOCALES as readonly string[]).includes(value);
 }
@@ -79,10 +81,11 @@ export function localeUrl(locale: Locale): string {
   return locale === DEFAULT_LOCALE ? `${SITE_URL}/` : `${SITE_URL}/${locale}/`;
 }
 
-/** hreflang alternates map (all locales + x-default) for <link rel="alternate">. */
-export function hreflangAlternates(): Record<string, string> {
+/** hreflang alternates map (all locales + x-default) for <link rel="alternate">.
+ *  Pass a `subpath` (e.g. "privacy/") for non-home pages. */
+export function hreflangAlternates(subpath = ""): Record<string, string> {
   const map: Record<string, string> = {};
-  for (const locale of LOCALES) map[LOCALE_BCP47[locale]] = localeUrl(locale);
-  map["x-default"] = localeUrl(DEFAULT_LOCALE);
+  for (const locale of LOCALES) map[LOCALE_BCP47[locale]] = `${localeUrl(locale)}${subpath}`;
+  map["x-default"] = `${localeUrl(DEFAULT_LOCALE)}${subpath}`;
   return map;
 }

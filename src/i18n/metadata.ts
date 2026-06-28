@@ -30,3 +30,27 @@ export function buildMetadata(locale: Locale): Metadata {
     },
   };
 }
+
+/** Metadata for a sub-page (privacy/terms/about) with localized canonical + hreflang. */
+export function buildPageMetadata(
+  locale: Locale,
+  opts: { title: string; description: string; subpath: string },
+): Metadata {
+  const url = `${localeUrl(locale)}${opts.subpath}`;
+  return {
+    title: opts.title,
+    description: opts.description,
+    alternates: {
+      canonical: url,
+      languages: hreflangAlternates(opts.subpath),
+    },
+    openGraph: {
+      type: "website",
+      siteName: "SplitWhom",
+      title: opts.title,
+      description: opts.description,
+      url,
+      locale: LOCALE_BCP47[locale].replace("-", "_"),
+    },
+  };
+}
