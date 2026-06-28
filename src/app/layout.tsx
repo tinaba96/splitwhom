@@ -5,8 +5,9 @@ import Script from "next/script";
 import "./globals.css";
 import { SITE_URL } from "@/i18n/config";
 
-// Google Analytics 4 measurement id; analytics only load when it's configured.
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+// Google Analytics 4 measurement id (public); defaults to the production
+// property, overridable via env for forks.
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-GWPSN5CCC1";
 // Google AdSense client id (ca-pub-...). Public by nature; defaults to the
 // production account, overridable via env for forks.
 const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? "ca-pub-1223705954567263";
