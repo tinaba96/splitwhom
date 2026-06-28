@@ -2,33 +2,33 @@ import type { Dictionary } from "../types";
 
 export const de: Dictionary = {
   "meta": {
-    "title": "SplitWhom — Rechnung teilen & sehen, wer wem was zahlt",
-    "description": "Kostenlose Web-App ohne Anmeldung, die Gruppenausgaben aufteilt und genau zeigt, wer wem mit den wenigsten Zahlungen Geld schuldet. Ideal für Reisen, Camping und WGs.",
+    "title": "SplitWhom — Rechnung teilen & sehen, wer wem was schuldet",
+    "description": "Kostenlose Web-App ohne Login, die Gruppenausgaben aufteilt und genau zeigt, wer wem mit den wenigsten Zahlungen Geld schuldet. Perfekt für Reisen, Camping und WGs.",
     "keywords": [
       "Rechnung teilen",
-      "Ausgaben teilen",
-      "Kosten aufteilen",
+      "Ausgaben aufteilen",
+      "Kosten teilen",
       "wer schuldet wem",
       "Schulden ausgleichen",
       "Gruppenausgaben",
       "Rechnung aufteilen Rechner",
-      "Kosten teilen App",
-      "Urlaubskasse abrechnen"
+      "WG Kosten aufteilen",
+      "Reisekosten teilen"
     ],
-    "ogTitle": "SplitWhom — Rechnung teilen & sehen, wer wem was zahlt",
+    "ogTitle": "SplitWhom — Rechnung teilen & sehen, wer wem was schuldet",
     "ogDescription": "Gruppenausgaben aufteilen und mit den wenigsten Zahlungen ausgleichen. Ohne Anmeldung, kostenlos, läuft im Browser."
   },
   "hero": {
-    "tagline": "Gemeinsame Ausgaben aufteilen und genau sehen, wer wem was zahlt — mit den wenigsten Zahlungen. Ohne Anmeldung, läuft komplett im Browser."
+    "tagline": "Gemeinsame Ausgaben aufteilen und genau sehen, wer wem zahlt — mit den wenigsten Zahlungen. Ohne Anmeldung, läuft komplett im Browser."
   },
   "setup": {
-    "eventName": "Name des Events",
-    "eventPlaceholder": "z. B. Campingtrip",
+    "eventName": "Anlass",
+    "eventPlaceholder": "z. B. Campingausflug",
     "currency": "Währung"
   },
   "members": {
     "title": "Teilnehmer",
-    "addPlaceholder": "Namen hinzufügen",
+    "addPlaceholder": "Name hinzufügen",
     "add": "Hinzufügen",
     "empty": "Füge alle hinzu, die sich die Kosten geteilt haben.",
     "removeAria": "{name} entfernen",
@@ -44,23 +44,23 @@ export const de: Dictionary = {
     "descPlaceholder": "z. B. Essen",
     "amount": "Betrag",
     "splitBetween": "Aufteilen unter",
-    "selectAll": "Alle wählen",
+    "selectAll": "Alle auswählen",
     "clearAll": "Alle abwählen",
     "addPayment": "Zahlung hinzufügen",
-    "paidFor": "bezahlte",
-    "splitEveryone": "Unter allen aufgeteilt",
-    "splitBetweenNames": "Aufgeteilt unter {names}",
+    "paidFor": "zahlte für",
+    "splitEveryone": "Unter allen aufteilen",
+    "splitBetweenNames": "Aufteilen unter {names}",
     "deleteAria": "Löschen",
     "removed": "(entfernt)",
-    "fixedToggle": "Feste Beträge (optional)",
-    "fixedPlaceholder": "teilt Rest",
-    "fixedTag": "fest",
-    "splitRest": "Rest aufgeteilt unter {names}",
-    "fixedExceeds": "Die festen Beträge übersteigen die Summe."
+    "capToggle": "Ausgabenlimits (optional)",
+    "capPlaceholder": "kein Limit",
+    "capTag": "max.",
+    "splitRest": "Rest aufteilen unter {names}",
+    "capsTooLow": "Diese Limits decken den Gesamtbetrag nicht."
   },
   "results": {
-    "emptyPrompt": "Füge Teilnehmer und Zahlungen hinzu, um hier die Abrechnung zu sehen.",
-    "settlementTitle": "Abrechnung — wenigste Zahlungen",
+    "emptyPrompt": "Füge Teilnehmer und Zahlungen hinzu, um den Ausgleich hier zu sehen.",
+    "settlementTitle": "Ausgleich — wenigste Zahlungen",
     "total": "Gesamt {amount}",
     "allSettled": "Alles ausgeglichen — niemand schuldet etwas 🎉",
     "balancesTitle": "Salden",
@@ -76,16 +76,16 @@ export const de: Dictionary = {
   "footer": {
     "loadSample": "Beispieldaten laden",
     "reset": "Alles zurücksetzen",
-    "confirmSample": "Deine aktuellen Daten durch Beispieldaten ersetzen?",
+    "confirmSample": "Aktuelle Daten durch Beispieldaten ersetzen?",
     "confirmReset": "Alle Daten löschen? Das kann nicht rückgängig gemacht werden."
   },
   "sample": {
-    "title": "Campingtrip",
+    "title": "Campingausflug",
     "names": [
       "Lukas",
       "Jonas",
       "Lena",
-      "Felix",
+      "Finn",
       "Mia"
     ],
     "food": "Essen",
@@ -93,8 +93,8 @@ export const de: Dictionary = {
     "firewood": "Brennholz"
   },
   "landing": {
-    "heroHeading": "Rechnung teilen und sehen, wer wem was zahlt",
-    "heroSub": "Wenn mehrere Leute verschiedene Dinge bezahlen, findet SplitWhom den einfachsten Weg zum Ausgleich — die wenigsten Zahlungen, damit alle quitt sind. Kostenlos, ohne Konto, keine App zum Installieren.",
+    "heroHeading": "Rechnung teilen und sehen, wer wem was schuldet",
+    "heroSub": "Wenn mehrere Leute verschiedene Dinge bezahlen, berechnet SplitWhom den einfachsten Weg zum Ausgleich — die wenigsten Zahlungen, damit alle quitt sind. Kostenlos, kein Konto, keine App nötig.",
     "howItWorksTitle": "So funktioniert's",
     "steps": [
       {
@@ -103,53 +103,53 @@ export const de: Dictionary = {
       },
       {
         "title": "Eintragen, wer was bezahlt hat",
-        "body": "Füge jede Zahlung mit dem Betrag hinzu und wähle genau aus, unter wem sie aufgeteilt wird."
+        "body": "Füge jede Zahlung mit Betrag hinzu und wähle genau aus, unter wem sie aufgeteilt wird."
       },
       {
-        "title": "Die wenigsten Zahlungen erhalten",
-        "body": "SplitWhom zeigt dir sofort, wer wem was zahlt, um mit den wenigsten Überweisungen quitt zu sein."
+        "title": "Wenigste Zahlungen erhalten",
+        "body": "SplitWhom zeigt dir sofort, wer wem zahlt, um mit den wenigsten Überweisungen auszugleichen."
       }
     ],
     "whyTitle": "Warum SplitWhom",
     "features": [
       {
         "title": "Wenigste Zahlungen",
-        "body": "Die meisten Tools zeigen nur Salden. SplitWhom berechnet die minimale Anzahl an Überweisungen, sodass du so wenig wie möglich zahlen musst."
+        "body": "Die meisten Tools zeigen nur Salden. SplitWhom berechnet die minimale Anzahl an Überweisungen, damit du so wenig wie möglich zahlen musst."
       },
       {
-        "title": "Jeden Posten nach deinen Regeln teilen",
-        "body": "Essen geteilt, aber nur drei von euch haben Getränke gekauft? Wähle bei jeder einzelnen Ausgabe aus, wer dabei ist."
+        "title": "Jeden Posten individuell aufteilen",
+        "body": "Das Essen geteilt, aber nur drei von euch haben Getränke gekauft? Wähle bei jeder einzelnen Ausgabe, wer dabei ist."
       },
       {
         "title": "Privat von Grund auf",
-        "body": "Keine Anmeldung und kein Server — jede Berechnung läuft in deinem Browser und deine Daten bleiben auf deinem Gerät."
+        "body": "Keine Anmeldung, kein Server — jede Berechnung läuft in deinem Browser und deine Daten bleiben auf deinem Gerät."
       },
       {
         "title": "Jede Währung",
-        "body": "Funktioniert mit USD, EUR, JPY und mehr, mit exakter Rundung, damit kein Cent oder Yen verloren geht."
+        "body": "Funktioniert mit EUR, USD, JPY und mehr, mit exakter Rundung, damit kein Cent verloren geht."
       }
     ],
     "faqTitle": "Häufig gestellte Fragen",
     "faqs": [
       {
-        "q": "Wie teilt man eine Rechnung, wenn mehrere Leute bezahlt haben?",
-        "a": "Trage jede Zahlung ein und wer sie geteilt hat. SplitWhom rechnet zusammen, was jeder bezahlt hat und was er schuldet, und zeigt dann die wenigsten Überweisungen, damit alle quitt sind."
+        "q": "Wie teilt man eine Rechnung auf, wenn mehrere Leute bezahlt haben?",
+        "a": "Trage jede Zahlung ein und wer sie sich geteilt hat. SplitWhom rechnet zusammen, was jeder bezahlt hat und was er schuldet, und zeigt dann die wenigsten Überweisungen, damit alle quitt sind."
       },
       {
         "q": "Ist SplitWhom kostenlos?",
-        "a": "Ja, komplett kostenlos. Kein Konto, kein Abo und nichts zu installieren — es läuft direkt in deinem Browser."
+        "a": "Ja, völlig kostenlos. Kein Konto, kein Abo und nichts zu installieren — es läuft direkt im Browser."
       },
       {
-        "q": "Kann ich eine einzelne Ausgabe nur unter einigen Leuten aufteilen?",
-        "a": "Ja. Bei jeder Zahlung wählst du genau aus, unter wem sie aufgeteilt wird, sodass gemeinsame und nur für einige geltende Kosten korrekt behandelt werden."
+        "q": "Kann ich eine einzelne Ausgabe nur zwischen einigen Personen aufteilen?",
+        "a": "Ja. Bei jeder Zahlung wählst du genau aus, unter wem sie aufgeteilt wird, sodass geteilte Kosten und reine Gruppenkosten beide korrekt behandelt werden."
       },
       {
-        "q": "Funktioniert es für Reisen, Camping und WGs?",
-        "a": "Genau dafür ist es gemacht — für jede Situation, in der mehr als eine Person das Geld vorgestreckt hat und ihr fair abrechnen wollt."
+        "q": "Funktioniert das für Reisen, Camping und WGs?",
+        "a": "Genau dafür ist es gedacht — jede Situation, in der mehr als eine Person in Vorlage getreten ist und ihr fair ausgleichen müsst."
       },
       {
         "q": "Sind meine Daten privat?",
-        "a": "Ja. Es gibt kein Login und keinen Server. Alle Berechnungen laufen in deinem Browser und deine Daten werden nur auf deinem Gerät gespeichert."
+        "a": "Ja. Es gibt keinen Login und keinen Server. Alle Berechnungen laufen in deinem Browser und deine Daten werden nur auf deinem Gerät gespeichert."
       }
     ]
   },

@@ -3,6 +3,7 @@ import {
   settle,
   computeBalances,
   splitEvenly,
+  splitWithCaps,
   minimizeTransfers,
   toMinor,
   type MemberBalance,
@@ -20,7 +21,7 @@ function expense(
   amount: number,
   participantIds: string[],
   description = "x",
-  fixedShares?: Record<string, number>,
+  caps?: Record<string, number>,
 ): Expense {
   return {
     id: `${payerId}-${amount}-${participantIds.join("")}`,
@@ -28,7 +29,7 @@ function expense(
     description,
     amount,
     participantIds,
-    ...(fixedShares ? { fixedShares } : {}),
+    ...(caps ? { caps } : {}),
   };
 }
 
@@ -149,60 +150,84 @@ describe("settle — per-expense participant selection", () => {
   });
 });
 
-// ---------- fixed shares ----------
+// ---------- spending caps (water-filling) ----------
 
-describe("settle — fixed amounts for specific people", () => {
-  it("charges a fixed amount and splits the rest among the others", () => {
-    // A pays 100 for A,B,C. A is fixed at 40 → B and C split the remaining 60.
-    const r = settle(
-      state("USD", members("A", "B", "C"), [expense("A", 100, ["A", "B", "C"], "x", { A: 40 })]),
-    );
-    const owed = Object.fromEntries(r.balances.map((b) => [b.memberId, b.owed]));
-    expect(owed.A).toBe(4000); // fixed 40.00
-    expect(owed.B).toBe(3000); // 30.00
-    expect(owed.C).toBe(3000);
-    const net = Object.fromEntries(r.balances.map((b) => [b.memberId, b.net]));
-    expect(net.A).toBe(6000); // paid 100, owes 40
-    assertFullySettled(r.balances, r.transfers);
+describe("splitWithCaps", () => {
+  const m = (o: Record<string, number>) => new Map(Object.entries(o));
+
+  it("equal split when no caps bind", () => {
+    expect([...splitWithCaps(3000, ["A", "B", "C"], new Map()).values()]).toEqual([1000, 1000, 1000]);
   });
 
-  it("supports multiple fixed amounts with the rest split evenly", () => {
-    // total 100: A fixed 20, B fixed 30 → C,D split the remaining 50 (25 each).
+  it("a cap below the equal share binds; excess re-split among the rest", () => {
+    // total 3000, fair 1000 each, A capped at 500 -> A 500, B,C split 2500
+    expect(Object.fromEntries(splitWithCaps(3000, ["A", "B", "C"], m({ A: 500 })))).toEqual({
+      A: 500,
+      B: 1250,
+      C: 1250,
+    });
+  });
+
+  it("a cap above the equal share has no effect", () => {
+    expect(Object.fromEntries(splitWithCaps(3000, ["A", "B", "C"], m({ A: 2000 })))).toEqual({
+      A: 1000,
+      B: 1000,
+      C: 1000,
+    });
+  });
+
+  it("cascades through multiple binding caps", () => {
+    // total 4000, fair 1000; A,B capped at 200 -> remaining 3600 split C,D
+    expect(Object.fromEntries(splitWithCaps(4000, ["A", "B", "C", "D"], m({ A: 200, B: 200 })))).toEqual(
+      { A: 200, B: 200, C: 1800, D: 1800 },
+    );
+  });
+
+  it("a cap of 0 means that person pays nothing", () => {
+    expect(Object.fromEntries(splitWithCaps(3000, ["A", "B", "C"], m({ A: 0 })))).toEqual({
+      A: 0,
+      B: 1500,
+      C: 1500,
+    });
+  });
+
+  it("always sums to the total, even when caps are too low to cover it", () => {
+    // both capped at 1000 but total 10000 -> leftover 8000 spread equally
+    const r = splitWithCaps(10000, ["A", "B"], m({ A: 1000, B: 1000 }));
+    expect([...r.values()].reduce((a, b) => a + b, 0)).toBe(10000);
+  });
+});
+
+describe("settle — spending caps", () => {
+  it("caps a person's payment and redistributes the excess (settles fully)", () => {
+    // A pays 30 for A,B,C; A is capped at 5 -> A owes 5, B,C owe 12.50 each
     const r = settle(
-      state("USD", members("A", "B", "C", "D"), [
-        expense("A", 100, ["A", "B", "C", "D"], "x", { A: 20, B: 30 }),
-      ]),
+      state("USD", members("A", "B", "C"), [expense("A", 30, ["A", "B", "C"], "x", { A: 5 })]),
     );
     const owed = Object.fromEntries(r.balances.map((b) => [b.memberId, b.owed]));
-    expect(owed).toEqual({ A: 2000, B: 3000, C: 2500, D: 2500 });
+    expect(owed).toEqual({ A: 500, B: 1250, C: 1250 });
     expect(r.balances.reduce((s, b) => s + b.net, 0)).toBe(0);
     assertFullySettled(r.balances, r.transfers);
   });
 
-  it("keeps the expense total exact when the remainder doesn't divide evenly", () => {
-    // total 100, A fixed 34 → B,C split 66 → 33 each; everything reconciles to 100.
+  it("keeps the expense total exact with rounding under a cap", () => {
+    // total 10.00, A capped at 1.33 -> A 133, B,C split 867 -> 434/433
     const r = settle(
-      state("USD", members("A", "B", "C"), [expense("A", 100, ["A", "B", "C"], "x", { A: 34 })]),
+      state("USD", members("A", "B", "C"), [expense("A", 10, ["A", "B", "C"], "x", { A: 1.33 })]),
     );
-    const owedSum = r.balances.reduce((s, b) => s + b.owed, 0);
-    expect(owedSum).toBe(10000);
+    const owed = Object.fromEntries(r.balances.map((b) => [b.memberId, b.owed]));
+    expect(owed.A).toBe(133);
+    expect(owed.B + owed.C).toBe(867);
+    expect(r.balances.reduce((s, b) => s + b.owed, 0)).toBe(1000);
     assertFullySettled(r.balances, r.transfers);
   });
 
-  it("ignores fixed amounts for people who are not participants", () => {
+  it("ignores caps for people who are not participants", () => {
     const r = settle(
       state("USD", members("A", "B"), [expense("A", 100, ["A", "B"], "x", { GHOST: 50 })]),
     );
     const owed = Object.fromEntries(r.balances.map((b) => [b.memberId, b.owed]));
-    expect(owed).toEqual({ A: 5000, B: 5000 }); // ghost fixed ignored, plain even split
-  });
-
-  it("still reconciles when everyone has a fixed amount", () => {
-    const r = settle(
-      state("USD", members("A", "B"), [expense("A", 100, ["A", "B"], "x", { A: 60, B: 40 })]),
-    );
-    expect(r.balances.reduce((s, b) => s + b.owed, 0)).toBe(10000);
-    assertFullySettled(r.balances, r.transfers);
+    expect(owed).toEqual({ A: 5000, B: 5000 });
   });
 });
 
@@ -304,15 +329,15 @@ describe("settle — randomized invariants (fuzz)", () => {
         const subset = ids.filter(() => rng() < 0.6);
         if (subset.length === 0) subset.push(pick(ids));
         const amount = ri(1, 1000); // integer major units -> exact toMinor
-        // sometimes assign random fixed amounts to some participants
-        let fixedShares: Record<string, number> | undefined;
+        // sometimes assign random spending caps to some participants
+        let caps: Record<string, number> | undefined;
         if (rng() < 0.4) {
-          fixedShares = {};
+          caps = {};
           for (const id of subset) {
-            if (rng() < 0.5) fixedShares[id] = ri(0, 500);
+            if (rng() < 0.5) caps[id] = ri(0, 500);
           }
         }
-        es.push(expense(payer, amount, subset, `e${e}`, fixedShares));
+        es.push(expense(payer, amount, subset, `e${e}`, caps));
       }
 
       const s = state(currency, ms, es);

@@ -50,12 +50,12 @@ export interface Dictionary {
     splitBetweenNames: string;
     deleteAria: string;
     removed: string; // label for a deleted member referenced by an expense
-    fixedToggle: string; // discloses the optional fixed-amount inputs
-    fixedPlaceholder: string; // amount input placeholder meaning "splits the rest"
-    fixedTag: string; // badge shown after a fixed amount
+    capToggle: string; // discloses the optional per-person spending caps
+    capPlaceholder: string; // amount input placeholder meaning "no cap"
+    capTag: string; // badge shown after a capped amount, e.g. "max"
     /** "{names}" replaced with the people splitting the remainder */
     splitRest: string;
-    fixedExceeds: string; // warning when fixed amounts exceed the total
+    capsTooLow: string; // warning when the caps cannot cover the total
   };
   results: {
     emptyPrompt: string;

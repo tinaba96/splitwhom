@@ -22,9 +22,9 @@ export default function ExpensesSection({ t, state, setState, fmt }: Props) {
   const [amount, setAmount] = useState("");
   // track who is EXCLUDED rather than included, so members added later default to sharing.
   const [excluded, setExcluded] = useState<Set<string>>(new Set());
-  // optional fixed amounts per member id (raw string inputs)
-  const [fixed, setFixed] = useState<Record<string, string>>({});
-  const [showFixed, setShowFixed] = useState(false);
+  // optional per-person spending caps (raw string inputs by member id)
+  const [caps, setCaps] = useState<Record<string, string>>({});
+  const [showCaps, setShowCaps] = useState(false);
 
   const memberIds = useMemo(() => members.map((m) => m.id), [members]);
   const effectivePayer = memberIds.includes(payerId) ? payerId : (memberIds[0] ?? "");
@@ -44,37 +44,45 @@ export default function ExpensesSection({ t, state, setState, fmt }: Props) {
       return next;
     });
 
-  // sum of the fixed amounts currently entered for selected participants
-  const fixedSum = participants.reduce((s, id) => {
-    const v = parseFloat(fixed[id] ?? "");
+  const amountNum = parseFloat(amount);
+  // warn only when everyone is capped and the caps cannot cover the total
+  const validCapCount = participants.filter((id) => {
+    const v = parseFloat(caps[id] ?? "");
+    return Number.isFinite(v) && v >= 0;
+  }).length;
+  const capSum = participants.reduce((s, id) => {
+    const v = parseFloat(caps[id] ?? "");
     return s + (Number.isFinite(v) && v >= 0 ? v : 0);
   }, 0);
-  const amountNum = parseFloat(amount);
-  const fixedExceeds = Number.isFinite(amountNum) && amountNum > 0 && fixedSum > amountNum + 1e-9;
+  const capsTooLow =
+    participants.length > 0 &&
+    validCapCount === participants.length &&
+    amountNum > 0 &&
+    capSum < amountNum - 1e-9;
 
   const addExpense = () => {
     if (!effectivePayer || !description.trim() || !(amountNum > 0) || participants.length === 0) return;
-    const fixedShares: Record<string, number> = {};
+    const capMap: Record<string, number> = {};
     for (const id of participants) {
-      const raw = fixed[id];
+      const raw = caps[id];
       if (raw !== undefined && raw.trim() !== "") {
         const v = parseFloat(raw);
-        if (Number.isFinite(v) && v >= 0) fixedShares[id] = v;
+        if (Number.isFinite(v) && v >= 0) capMap[id] = v;
       }
     }
-    const hasFixed = Object.keys(fixedShares).length > 0;
+    const hasCaps = Object.keys(capMap).length > 0;
     const expense: Expense = {
       id: makeId(),
       payerId: effectivePayer,
       description: description.trim(),
       amount: amountNum,
       participantIds: [...participants],
-      ...(hasFixed ? { fixedShares } : {}),
+      ...(hasCaps ? { caps: capMap } : {}),
     };
     setState((s) => ({ ...s, expenses: [...s.expenses, expense] }));
     setDescription("");
     setAmount("");
-    setFixed({});
+    setCaps({});
   };
 
   const removeExpense = (id: string) =>
@@ -170,36 +178,36 @@ export default function ExpensesSection({ t, state, setState, fmt }: Props) {
             </div>
           </div>
 
-          {/* Optional: fixed amounts for specific people; the rest split the remainder. */}
+          {/* Optional: a maximum each person will pay; the rest absorb the excess. */}
           <div>
             <button
               type="button"
-              onClick={() => setShowFixed((v) => !v)}
-              aria-expanded={showFixed}
+              onClick={() => setShowCaps((v) => !v)}
+              aria-expanded={showCaps}
               className="flex items-center gap-1 text-xs font-medium text-brand hover:underline"
             >
-              <span aria-hidden className={showFixed ? "rotate-90 transition" : "transition"}>▸</span>
-              {t.payments.fixedToggle}
+              <span aria-hidden className={showCaps ? "rotate-90 transition" : "transition"}>▸</span>
+              {t.payments.capToggle}
             </button>
-            {showFixed && participants.length > 0 && (
+            {showCaps && participants.length > 0 && (
               <div className="mt-2 flex flex-col gap-1.5 rounded-lg border border-border bg-card p-2">
                 {participants.map((id) => (
                   <div key={id} className="flex items-center gap-2">
                     <span className="flex-1 truncate text-sm">{nameOf(id)}</span>
                     <input
-                      value={fixed[id] ?? ""}
-                      onChange={(e) => setFixed((f) => ({ ...f, [id]: e.target.value }))}
+                      value={caps[id] ?? ""}
+                      onChange={(e) => setCaps((c) => ({ ...c, [id]: e.target.value }))}
                       inputMode="decimal"
                       type="number"
                       min="0"
                       step="any"
-                      placeholder={t.payments.fixedPlaceholder}
+                      placeholder={t.payments.capPlaceholder}
                       className="w-28 rounded-md border border-border bg-background px-2 py-1 text-right text-sm outline-none focus:border-brand"
                     />
                   </div>
                 ))}
-                {fixedExceeds && (
-                  <p className="text-xs font-medium text-negative">{t.payments.fixedExceeds}</p>
+                {capsTooLow && (
+                  <p className="text-xs font-medium text-negative">{t.payments.capsTooLow}</p>
                 )}
               </div>
             )}
@@ -218,11 +226,11 @@ export default function ExpensesSection({ t, state, setState, fmt }: Props) {
       {expenses.length > 0 && (
         <ul className="mt-3 flex flex-col gap-2">
           {expenses.map((e) => {
-            const fs = e.fixedShares;
-            const fixedIds = fs
-              ? e.participantIds.filter((id) => Number.isFinite(fs[id]) && fs[id] >= 0)
+            const cs = e.caps;
+            const cappedIds = cs
+              ? e.participantIds.filter((id) => Number.isFinite(cs[id]) && cs[id] >= 0)
               : [];
-            const restIds = e.participantIds.filter((id) => !fixedIds.includes(id));
+            const restIds = e.participantIds.filter((id) => !cappedIds.includes(id));
             return (
               <li
                 key={e.id}
@@ -235,7 +243,7 @@ export default function ExpensesSection({ t, state, setState, fmt }: Props) {
                     <span className="truncate">{e.description}</span>
                   </div>
                   <div className="mt-0.5 text-xs text-muted">
-                    {fixedIds.length === 0 ? (
+                    {cappedIds.length === 0 ? (
                       e.participantIds.length === members.length ? (
                         t.payments.splitEveryone
                       ) : (
@@ -245,11 +253,11 @@ export default function ExpensesSection({ t, state, setState, fmt }: Props) {
                       )
                     ) : (
                       <span>
-                        {fixedIds
-                          .map((id) => `${nameOf(id)} ${fmt(toMinor(fs![id], decimals))}`)
+                        {cappedIds
+                          .map((id) => `${nameOf(id)} ${fmt(toMinor(cs![id], decimals))}`)
                           .join(", ")}{" "}
                         <span className="rounded bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
-                          {t.payments.fixedTag}
+                          {t.payments.capTag}
                         </span>
                         {restIds.length > 0 &&
                           " · " +

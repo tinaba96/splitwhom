@@ -51,6 +51,58 @@ export function splitEvenly(total: number, n: number): number[] {
   return Array.from({ length: n }, (_, i) => base + (i < remainder ? 1 : 0));
 }
 
+/**
+ * Split an integer `total` among participants where some have a maximum (cap)
+ * they will pay. Anyone whose equal share would exceed their cap pays exactly the
+ * cap, and the excess is re-split among the remaining participants — repeated until
+ * no remaining cap is exceeded (progressive "water-filling"). Participants without
+ * a cap (or whose cap doesn't bind) split the remainder equally. The returned shares
+ * always sum to `total`. If caps are collectively too low to cover `total`, the
+ * unavoidable leftover is spread equally so the expense still reconciles.
+ */
+export function splitWithCaps(
+  total: number,
+  participantIds: string[],
+  caps: Map<string, number>,
+): Map<string, number> {
+  const owed = new Map<string, number>(participantIds.map((id) => [id, 0]));
+  let remaining = total;
+  let active = [...participantIds];
+
+  // Each iteration caps at most one member; bounded by the participant count.
+  for (let guard = 0; guard <= participantIds.length && active.length > 0; guard++) {
+    const n = active.length;
+    // smallest binding cap = an active member whose cap is below the equal share
+    let bind: string | null = null;
+    let bindCap = Infinity;
+    for (const id of active) {
+      const cap = caps.get(id);
+      if (cap !== undefined && cap * n < remaining && cap < bindCap) {
+        bind = id;
+        bindCap = cap;
+      }
+    }
+    if (bind === null) {
+      // no cap binds: everyone left splits the remainder equally
+      const shares = splitEvenly(remaining, n);
+      active.forEach((id, i) => owed.set(id, (owed.get(id) ?? 0) + shares[i]));
+      remaining = 0;
+      active = [];
+      break;
+    }
+    owed.set(bind, (owed.get(bind) ?? 0) + bindCap);
+    remaining -= bindCap;
+    active = active.filter((id) => id !== bind);
+  }
+
+  // Caps too low to cover the total: spread the unavoidable leftover so it reconciles.
+  if (remaining !== 0 && participantIds.length > 0) {
+    const shares = splitEvenly(remaining, participantIds.length);
+    participantIds.forEach((id, i) => owed.set(id, (owed.get(id) ?? 0) + shares[i]));
+  }
+  return owed;
+}
+
 /** Compute each member's paid / owed / net in minor units. */
 export function computeBalances(
   members: Member[],
@@ -73,32 +125,19 @@ export function computeBalances(
       paid.set(exp.payerId, (paid.get(exp.payerId) ?? 0) + total);
     }
 
-    // Fixed amounts for specific participants; the rest split the remainder equally.
-    const fixed = new Map<string, number>();
-    if (exp.fixedShares) {
+    // Optional per-person spending caps; the rest is shared via water-filling.
+    const caps = new Map<string, number>();
+    if (exp.caps) {
       for (const id of participants) {
-        const amt = exp.fixedShares[id];
-        if (Number.isFinite(amt) && amt >= 0) fixed.set(id, toMinor(amt, decimals));
+        const c = exp.caps[id];
+        if (Number.isFinite(c) && c >= 0) caps.set(id, toMinor(c, decimals));
       }
     }
 
-    let fixedTotal = 0;
-    for (const [id, amt] of fixed) {
-      owed.set(id, (owed.get(id) ?? 0) + amt);
-      fixedTotal += amt;
+    const shares = splitWithCaps(total, participants, caps);
+    for (const [id, share] of shares) {
+      owed.set(id, (owed.get(id) ?? 0) + share);
     }
-
-    // Whatever is left after fixed amounts is split equally among the non-fixed
-    // participants. If everyone is fixed (degenerate), fall back to all participants
-    // so the expense still reconciles to its full total.
-    const remainder = total - fixedTotal;
-    let splitters = participants.filter((id) => !fixed.has(id));
-    if (splitters.length === 0) splitters = participants;
-
-    const shares = splitEvenly(remainder, splitters.length);
-    splitters.forEach((id, i) => {
-      owed.set(id, (owed.get(id) ?? 0) + shares[i]);
-    });
   }
 
   return members.map((m) => {
