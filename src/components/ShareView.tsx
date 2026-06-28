@@ -1,9 +1,16 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { DEFAULT_LOCALE, LOCALE_BCP47, localePath } from "@/i18n/config";
+import {
+  DEFAULT_LOCALE,
+  LOCALES,
+  LOCALE_NAMES,
+  LOCALE_BCP47,
+  type Locale,
+  localePath,
+} from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { settle } from "@/lib/settle";
 import { formatMinor } from "@/lib/format";
@@ -26,15 +33,19 @@ export default function ShareView() {
   const hash = useSyncExternalStore(subscribe, getHash, getServerHash);
   const shared = useMemo(() => (hash ? decodeShare(hash) : null), [hash]);
   const router = useRouter();
+  // viewer can override the shared language in place (the link is unchanged)
+  const [override, setOverride] = useState<Locale | null>(null);
 
-  // English fallback dictionary until the (client-only) hash decodes
-  const locale = shared?.locale ?? DEFAULT_LOCALE;
+  const locale = override ?? shared?.locale ?? DEFAULT_LOCALE;
   const t = getDictionary(locale);
 
   if (!shared) {
     return (
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center gap-6 px-4 py-16 text-center">
-        <Brand />
+        <div className="flex items-center gap-3">
+          <Brand />
+          <LocaleSelect value={locale} onChange={setOverride} label={t.switcher.label} />
+        </div>
         <p className="text-sm text-muted">{t.share.invalid}</p>
         <Link
           href={localePath(DEFAULT_LOCALE)}
@@ -62,7 +73,10 @@ export default function ShareView() {
 
       <div className="flex items-center justify-between gap-3">
         <Brand />
-        <span className="text-xs text-muted">{t.share.readonlyNote}</span>
+        <div className="flex items-center gap-3">
+          <span className="hidden text-xs text-muted sm:inline">{t.share.readonlyNote}</span>
+          <LocaleSelect value={locale} onChange={setOverride} label={t.switcher.label} />
+        </div>
       </div>
 
       {state.title && <h1 className="text-2xl font-bold tracking-tight">{state.title}</h1>}
@@ -90,6 +104,36 @@ export default function ShareView() {
         </Link>
       </div>
     </main>
+  );
+}
+
+// In-place language selector: changes the display language without navigating,
+// so the shared data (in the URL hash) is preserved.
+function LocaleSelect({
+  value,
+  onChange,
+  label,
+}: {
+  value: Locale;
+  onChange: (l: Locale) => void;
+  label: string;
+}) {
+  return (
+    <label className="flex items-center gap-1 rounded-lg border border-border bg-card px-2 py-1.5 text-sm">
+      <span aria-hidden>🌐</span>
+      <select
+        aria-label={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value as Locale)}
+        className="bg-transparent text-sm font-medium outline-none"
+      >
+        {LOCALES.map((l) => (
+          <option key={l} value={l}>
+            {LOCALE_NAMES[l]}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }
 
