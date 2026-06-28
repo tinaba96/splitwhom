@@ -147,4 +147,11 @@ export interface Dictionary {
     contactHeading: string;
     contactBody: string; // text before the contact email (appended in code)
   };
+  /** cross-promo card to our sister product (Shenzhen Buddies) */
+  crossPromo: {
+    eyebrow: string; // small "from the team" label
+    title: string;
+    body: string;
+    cta: string; // link label
+  };
 }

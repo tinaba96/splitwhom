@@ -5,6 +5,7 @@ import LandingSections from "./LandingSections";
 import LanguageSwitcher from "./LanguageSwitcher";
 import StructuredData from "./StructuredData";
 import SiteFooter from "./SiteFooter";
+import CrossPromoBanner from "./CrossPromoBanner";
 import LangSync from "./LangSync";
 import AdUnit from "./AdUnit";
 
@@ -37,6 +38,8 @@ export default function HomePage({ locale }: { locale: Locale }) {
       <SplitApp t={t} locale={locale} />
 
       <LandingSections t={t} />
+
+      <CrossPromoBanner t={t} />
 
       <AdUnit slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME} />
 

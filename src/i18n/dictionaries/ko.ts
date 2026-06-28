@@ -298,5 +298,11 @@ export const ko: Dictionary = {
     ],
     "contactHeading": "문의",
     "contactBody": "질문, 의견, 아이디어가 있으신가요? 아래로 연락해 주세요:"
+  },
+  "crossPromo": {
+    "eyebrow": "SplitWhom 팀 추천",
+    "title": "다 함께 여행 가세요? 현지 친구를 만나보세요",
+    "body": "Shenzhen Buddies는 전 세계 여행자와 관심사가 비슷한 현지인을 연결해 도시를 안내해 줍니다.",
+    "cta": "Shenzhen Buddies 둘러보기"
   }
 };

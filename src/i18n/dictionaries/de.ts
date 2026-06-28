@@ -298,5 +298,11 @@ export const de: Dictionary = {
     ],
     "contactHeading": "Kontakt",
     "contactBody": "Fragen, Feedback oder Ideen? Erreiche uns unter"
+  },
+  "crossPromo": {
+    "eyebrow": "Vom SplitWhom-Team",
+    "title": "Mit der Gruppe unterwegs? Triff einen Local",
+    "body": "Shenzhen Buddies bringt Reisende aus aller Welt mit Einheimischen zusammen, die ihre Interessen teilen – und zeigt ihnen die Stadt.",
+    "cta": "Shenzhen Buddies entdecken"
   }
 };

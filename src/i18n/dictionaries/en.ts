@@ -299,4 +299,10 @@ export const en: Dictionary = {
     contactHeading: "Contact",
     contactBody: "Questions, feedback, or ideas? Reach us at",
   },
+  crossPromo: {
+    eyebrow: "From the SplitWhom team",
+    title: "Traveling with the group? Meet a local.",
+    body: "Shenzhen Buddies pairs international travelers with locals who share their interests — and shows them around.",
+    cta: "Discover Shenzhen Buddies",
+  },
 };

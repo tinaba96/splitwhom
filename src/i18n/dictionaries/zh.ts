@@ -298,5 +298,11 @@ export const zh: Dictionary = {
     ],
     "contactHeading": "联系我们",
     "contactBody": "有问题、反馈或建议？请通过以下方式联系我们："
+  },
+  "crossPromo": {
+    "eyebrow": "来自 SplitWhom 团队",
+    "title": "结伴出游？认识一位当地朋友",
+    "body": "Shenzhen Buddies 将各国旅行者与志同道合的当地人配对，带你逛遍这座城市。",
+    "cta": "了解 Shenzhen Buddies"
   }
 };

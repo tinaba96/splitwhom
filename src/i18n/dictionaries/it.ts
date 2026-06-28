@@ -298,5 +298,11 @@ export const it: Dictionary = {
     ],
     "contactHeading": "Contatti",
     "contactBody": "Domande, feedback o idee? Scrivici a"
+  },
+  "crossPromo": {
+    "eyebrow": "Dal team di SplitWhom",
+    "title": "In viaggio in gruppo? Incontra un local",
+    "body": "Shenzhen Buddies mette in contatto i viaggiatori di tutto il mondo con gente del posto che condivide i loro interessi e fa loro da guida.",
+    "cta": "Scopri Shenzhen Buddies"
   }
 };

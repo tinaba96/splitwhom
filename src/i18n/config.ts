@@ -67,6 +67,10 @@ export const SITE_URL = resolveSiteUrl();
 
 export const CONTACT_EMAIL = "contact@splitwhom.com";
 
+/** Sister product cross-promo link (with UTM attribution). */
+export const CROSS_PROMO_URL =
+  "https://shenzhen-buddies.com/welcome?utm_source=splitwhom&utm_medium=banner&utm_campaign=cross_promo";
+
 export function isLocale(value: string): value is Locale {
   return (LOCALES as readonly string[]).includes(value);
 }
