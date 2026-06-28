@@ -20,8 +20,16 @@ function expense(
   amount: number,
   participantIds: string[],
   description = "x",
+  fixedShares?: Record<string, number>,
 ): Expense {
-  return { id: `${payerId}-${amount}-${participantIds.join("")}`, payerId, description, amount, participantIds };
+  return {
+    id: `${payerId}-${amount}-${participantIds.join("")}`,
+    payerId,
+    description,
+    amount,
+    participantIds,
+    ...(fixedShares ? { fixedShares } : {}),
+  };
 }
 
 function state(currency: CurrencyCode, ms: Member[], es: Expense[]): SplitState {
@@ -141,6 +149,63 @@ describe("settle — per-expense participant selection", () => {
   });
 });
 
+// ---------- fixed shares ----------
+
+describe("settle — fixed amounts for specific people", () => {
+  it("charges a fixed amount and splits the rest among the others", () => {
+    // A pays 100 for A,B,C. A is fixed at 40 → B and C split the remaining 60.
+    const r = settle(
+      state("USD", members("A", "B", "C"), [expense("A", 100, ["A", "B", "C"], "x", { A: 40 })]),
+    );
+    const owed = Object.fromEntries(r.balances.map((b) => [b.memberId, b.owed]));
+    expect(owed.A).toBe(4000); // fixed 40.00
+    expect(owed.B).toBe(3000); // 30.00
+    expect(owed.C).toBe(3000);
+    const net = Object.fromEntries(r.balances.map((b) => [b.memberId, b.net]));
+    expect(net.A).toBe(6000); // paid 100, owes 40
+    assertFullySettled(r.balances, r.transfers);
+  });
+
+  it("supports multiple fixed amounts with the rest split evenly", () => {
+    // total 100: A fixed 20, B fixed 30 → C,D split the remaining 50 (25 each).
+    const r = settle(
+      state("USD", members("A", "B", "C", "D"), [
+        expense("A", 100, ["A", "B", "C", "D"], "x", { A: 20, B: 30 }),
+      ]),
+    );
+    const owed = Object.fromEntries(r.balances.map((b) => [b.memberId, b.owed]));
+    expect(owed).toEqual({ A: 2000, B: 3000, C: 2500, D: 2500 });
+    expect(r.balances.reduce((s, b) => s + b.net, 0)).toBe(0);
+    assertFullySettled(r.balances, r.transfers);
+  });
+
+  it("keeps the expense total exact when the remainder doesn't divide evenly", () => {
+    // total 100, A fixed 34 → B,C split 66 → 33 each; everything reconciles to 100.
+    const r = settle(
+      state("USD", members("A", "B", "C"), [expense("A", 100, ["A", "B", "C"], "x", { A: 34 })]),
+    );
+    const owedSum = r.balances.reduce((s, b) => s + b.owed, 0);
+    expect(owedSum).toBe(10000);
+    assertFullySettled(r.balances, r.transfers);
+  });
+
+  it("ignores fixed amounts for people who are not participants", () => {
+    const r = settle(
+      state("USD", members("A", "B"), [expense("A", 100, ["A", "B"], "x", { GHOST: 50 })]),
+    );
+    const owed = Object.fromEntries(r.balances.map((b) => [b.memberId, b.owed]));
+    expect(owed).toEqual({ A: 5000, B: 5000 }); // ghost fixed ignored, plain even split
+  });
+
+  it("still reconciles when everyone has a fixed amount", () => {
+    const r = settle(
+      state("USD", members("A", "B"), [expense("A", 100, ["A", "B"], "x", { A: 60, B: 40 })]),
+    );
+    expect(r.balances.reduce((s, b) => s + b.owed, 0)).toBe(10000);
+    assertFullySettled(r.balances, r.transfers);
+  });
+});
+
 // ---------- currencies / rounding ----------
 
 describe("settle — currency rounding", () => {
@@ -239,7 +304,15 @@ describe("settle — randomized invariants (fuzz)", () => {
         const subset = ids.filter(() => rng() < 0.6);
         if (subset.length === 0) subset.push(pick(ids));
         const amount = ri(1, 1000); // integer major units -> exact toMinor
-        es.push(expense(payer, amount, subset, `e${e}`));
+        // sometimes assign random fixed amounts to some participants
+        let fixedShares: Record<string, number> | undefined;
+        if (rng() < 0.4) {
+          fixedShares = {};
+          for (const id of subset) {
+            if (rng() < 0.5) fixedShares[id] = ri(0, 500);
+          }
+        }
+        es.push(expense(payer, amount, subset, `e${e}`, fixedShares));
       }
 
       const s = state(currency, ms, es);

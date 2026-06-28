@@ -54,6 +54,11 @@ export const en: Dictionary = {
     splitBetweenNames: "Split between {names}",
     deleteAria: "Delete",
     removed: "(removed)",
+    fixedToggle: "Fixed amounts (optional)",
+    fixedPlaceholder: "splits rest",
+    fixedTag: "fixed",
+    splitRest: "Rest split between {names}",
+    fixedExceeds: "Fixed amounts exceed the total.",
   },
   results: {
     emptyPrompt: "Add members and payments to see the settlement here.",

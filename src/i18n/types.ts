@@ -50,6 +50,12 @@ export interface Dictionary {
     splitBetweenNames: string;
     deleteAria: string;
     removed: string; // label for a deleted member referenced by an expense
+    fixedToggle: string; // discloses the optional fixed-amount inputs
+    fixedPlaceholder: string; // amount input placeholder meaning "splits the rest"
+    fixedTag: string; // badge shown after a fixed amount
+    /** "{names}" replaced with the people splitting the remainder */
+    splitRest: string;
+    fixedExceeds: string; // warning when fixed amounts exceed the total
   };
   results: {
     emptyPrompt: string;

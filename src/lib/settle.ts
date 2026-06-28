@@ -73,8 +73,30 @@ export function computeBalances(
       paid.set(exp.payerId, (paid.get(exp.payerId) ?? 0) + total);
     }
 
-    const shares = splitEvenly(total, participants.length);
-    participants.forEach((id, i) => {
+    // Fixed amounts for specific participants; the rest split the remainder equally.
+    const fixed = new Map<string, number>();
+    if (exp.fixedShares) {
+      for (const id of participants) {
+        const amt = exp.fixedShares[id];
+        if (Number.isFinite(amt) && amt >= 0) fixed.set(id, toMinor(amt, decimals));
+      }
+    }
+
+    let fixedTotal = 0;
+    for (const [id, amt] of fixed) {
+      owed.set(id, (owed.get(id) ?? 0) + amt);
+      fixedTotal += amt;
+    }
+
+    // Whatever is left after fixed amounts is split equally among the non-fixed
+    // participants. If everyone is fixed (degenerate), fall back to all participants
+    // so the expense still reconciles to its full total.
+    const remainder = total - fixedTotal;
+    let splitters = participants.filter((id) => !fixed.has(id));
+    if (splitters.length === 0) splitters = participants;
+
+    const shares = splitEvenly(remainder, splitters.length);
+    splitters.forEach((id, i) => {
       owed.set(id, (owed.get(id) ?? 0) + shares[i]);
     });
   }

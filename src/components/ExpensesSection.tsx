@@ -16,11 +16,15 @@ interface Props {
 
 export default function ExpensesSection({ t, state, setState, fmt }: Props) {
   const { members, expenses } = state;
+  const decimals = CURRENCIES[state.currency].decimals;
   const [payerId, setPayerId] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   // track who is EXCLUDED rather than included, so members added later default to sharing.
   const [excluded, setExcluded] = useState<Set<string>>(new Set());
+  // optional fixed amounts per member id (raw string inputs)
+  const [fixed, setFixed] = useState<Record<string, string>>({});
+  const [showFixed, setShowFixed] = useState(false);
 
   const memberIds = useMemo(() => members.map((m) => m.id), [members]);
   const effectivePayer = memberIds.includes(payerId) ? payerId : (memberIds[0] ?? "");
@@ -40,26 +44,43 @@ export default function ExpensesSection({ t, state, setState, fmt }: Props) {
       return next;
     });
 
+  // sum of the fixed amounts currently entered for selected participants
+  const fixedSum = participants.reduce((s, id) => {
+    const v = parseFloat(fixed[id] ?? "");
+    return s + (Number.isFinite(v) && v >= 0 ? v : 0);
+  }, 0);
+  const amountNum = parseFloat(amount);
+  const fixedExceeds = Number.isFinite(amountNum) && amountNum > 0 && fixedSum > amountNum + 1e-9;
+
   const addExpense = () => {
-    const value = parseFloat(amount);
-    if (!effectivePayer || !description.trim() || !(value > 0) || participants.length === 0) return;
+    if (!effectivePayer || !description.trim() || !(amountNum > 0) || participants.length === 0) return;
+    const fixedShares: Record<string, number> = {};
+    for (const id of participants) {
+      const raw = fixed[id];
+      if (raw !== undefined && raw.trim() !== "") {
+        const v = parseFloat(raw);
+        if (Number.isFinite(v) && v >= 0) fixedShares[id] = v;
+      }
+    }
+    const hasFixed = Object.keys(fixedShares).length > 0;
     const expense: Expense = {
       id: makeId(),
       payerId: effectivePayer,
       description: description.trim(),
-      amount: value,
+      amount: amountNum,
       participantIds: [...participants],
+      ...(hasFixed ? { fixedShares } : {}),
     };
     setState((s) => ({ ...s, expenses: [...s.expenses, expense] }));
     setDescription("");
     setAmount("");
+    setFixed({});
   };
 
   const removeExpense = (id: string) =>
     setState((s) => ({ ...s, expenses: s.expenses.filter((e) => e.id !== id) }));
 
-  const canAdd =
-    effectivePayer && description.trim() && parseFloat(amount) > 0 && participants.length > 0;
+  const canAdd = effectivePayer && description.trim() && amountNum > 0 && participants.length > 0;
 
   return (
     <section className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5">
@@ -149,6 +170,41 @@ export default function ExpensesSection({ t, state, setState, fmt }: Props) {
             </div>
           </div>
 
+          {/* Optional: fixed amounts for specific people; the rest split the remainder. */}
+          <div>
+            <button
+              type="button"
+              onClick={() => setShowFixed((v) => !v)}
+              aria-expanded={showFixed}
+              className="flex items-center gap-1 text-xs font-medium text-brand hover:underline"
+            >
+              <span aria-hidden className={showFixed ? "rotate-90 transition" : "transition"}>▸</span>
+              {t.payments.fixedToggle}
+            </button>
+            {showFixed && participants.length > 0 && (
+              <div className="mt-2 flex flex-col gap-1.5 rounded-lg border border-border bg-card p-2">
+                {participants.map((id) => (
+                  <div key={id} className="flex items-center gap-2">
+                    <span className="flex-1 truncate text-sm">{nameOf(id)}</span>
+                    <input
+                      value={fixed[id] ?? ""}
+                      onChange={(e) => setFixed((f) => ({ ...f, [id]: e.target.value }))}
+                      inputMode="decimal"
+                      type="number"
+                      min="0"
+                      step="any"
+                      placeholder={t.payments.fixedPlaceholder}
+                      className="w-28 rounded-md border border-border bg-background px-2 py-1 text-right text-sm outline-none focus:border-brand"
+                    />
+                  </div>
+                ))}
+                {fixedExceeds && (
+                  <p className="text-xs font-medium text-negative">{t.payments.fixedExceeds}</p>
+                )}
+              </div>
+            )}
+          </div>
+
           <button
             onClick={addExpense}
             disabled={!canAdd}
@@ -161,37 +217,60 @@ export default function ExpensesSection({ t, state, setState, fmt }: Props) {
 
       {expenses.length > 0 && (
         <ul className="mt-3 flex flex-col gap-2">
-          {expenses.map((e) => (
-            <li
-              key={e.id}
-              className="flex items-center gap-3 rounded-xl border border-border px-3 py-2"
-            >
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="font-medium">{nameOf(e.payerId)}</span>
-                  <span className="text-muted">{t.payments.paidFor}</span>
-                  <span className="truncate">{e.description}</span>
-                </div>
-                <div className="mt-0.5 text-xs text-muted">
-                  {e.participantIds.length === members.length
-                    ? t.payments.splitEveryone
-                    : fill(t.payments.splitBetweenNames, {
-                        names: e.participantIds.map(nameOf).join(" · "),
-                      })}
-                </div>
-              </div>
-              <span className="shrink-0 font-mono text-sm font-semibold">
-                {fmt(toMinor(e.amount, CURRENCIES[state.currency].decimals))}
-              </span>
-              <button
-                onClick={() => removeExpense(e.id)}
-                aria-label={t.payments.deleteAria}
-                className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-muted hover:bg-negative hover:text-white"
+          {expenses.map((e) => {
+            const fs = e.fixedShares;
+            const fixedIds = fs
+              ? e.participantIds.filter((id) => Number.isFinite(fs[id]) && fs[id] >= 0)
+              : [];
+            const restIds = e.participantIds.filter((id) => !fixedIds.includes(id));
+            return (
+              <li
+                key={e.id}
+                className="flex items-center gap-3 rounded-xl border border-border px-3 py-2"
               >
-                ×
-              </button>
-            </li>
-          ))}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="font-medium">{nameOf(e.payerId)}</span>
+                    <span className="text-muted">{t.payments.paidFor}</span>
+                    <span className="truncate">{e.description}</span>
+                  </div>
+                  <div className="mt-0.5 text-xs text-muted">
+                    {fixedIds.length === 0 ? (
+                      e.participantIds.length === members.length ? (
+                        t.payments.splitEveryone
+                      ) : (
+                        fill(t.payments.splitBetweenNames, {
+                          names: e.participantIds.map(nameOf).join(" · "),
+                        })
+                      )
+                    ) : (
+                      <span>
+                        {fixedIds
+                          .map((id) => `${nameOf(id)} ${fmt(toMinor(fs![id], decimals))}`)
+                          .join(", ")}{" "}
+                        <span className="rounded bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
+                          {t.payments.fixedTag}
+                        </span>
+                        {restIds.length > 0 &&
+                          " · " +
+                            fill(t.payments.splitRest, { names: restIds.map(nameOf).join(" · ") })}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span className="shrink-0 font-mono text-sm font-semibold">
+                  {fmt(toMinor(e.amount, decimals))}
+                </span>
+                <button
+                  onClick={() => removeExpense(e.id)}
+                  aria-label={t.payments.deleteAria}
+                  className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-muted hover:bg-negative hover:text-white"
+                >
+                  ×
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

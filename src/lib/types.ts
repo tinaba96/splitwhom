@@ -32,8 +32,15 @@ export interface Expense {
   description: string;
   /** amount in major units, as entered */
   amount: number;
-  /** member ids who share this expense (split equally among them) */
+  /** member ids who share this expense */
   participantIds: string[];
+  /**
+   * Optional fixed amounts (major units) for specific participants. Those members
+   * owe exactly their fixed amount; the remaining cost is split equally among the
+   * other participants. e.g. { Alex: 20 } → Alex owes 20, the rest is split between
+   * everyone else.
+   */
+  fixedShares?: Record<string, number>;
 }
 
 export interface SplitState {
