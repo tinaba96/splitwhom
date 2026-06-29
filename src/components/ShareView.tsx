@@ -21,6 +21,7 @@ import MemberContacts from "./MemberContacts";
 import PaymentDetails from "./PaymentDetails";
 import LangSync from "./LangSync";
 import ShareButton from "./ShareButton";
+import CrossPromoBanner from "./CrossPromoBanner";
 
 // The window hash carries the shared data; read it as an external store so the
 // server snapshot ("") and client snapshot stay consistent without a hydration mismatch.
@@ -109,6 +110,8 @@ export default function ShareView() {
           {t.share.ctaButton}
         </Link>
       </div>
+
+      <CrossPromoBanner t={t} />
     </main>
   );
 }
