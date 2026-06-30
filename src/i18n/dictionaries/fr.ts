@@ -135,6 +135,10 @@ export const fr: Dictionary = {
     "faqTitle": "Questions fréquentes",
     "faqs": [
       {
+        "q": "En quoi SplitWhom diffère-t-il d'applis comme Splitwise ?",
+        "a": "SplitWhom ne demande aucun compte, aucune installation et aucun serveur : tout fonctionne dans votre navigateur. Il calcule aussi le minimum de paiements pour équilibrer les comptes et vous laisse choisir précisément qui partage chaque dépense, le tout gratuitement."
+      },
+      {
         "q": "Comment partager une addition quand plusieurs personnes ont payé ?",
         "a": "Saisissez chaque paiement et qui l'a partagé. SplitWhom additionne ce que chacun a payé par rapport à ce qu'il doit, puis affiche le minimum de virements pour que tout le monde soit à égalité."
       },

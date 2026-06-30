@@ -135,6 +135,10 @@ export const de: Dictionary = {
     "faqTitle": "Häufig gestellte Fragen",
     "faqs": [
       {
+        "q": "Wie unterscheidet sich SplitWhom von Apps wie Splitwise?",
+        "a": "SplitWhom braucht kein Konto, keine App-Installation und keinen Server – alles läuft direkt im Browser. Zudem berechnet es die wenigsten Zahlungen zum Ausgleich und lässt dich für jede Ausgabe genau auswählen, wer beteiligt ist – und das kostenlos."
+      },
+      {
         "q": "Wie teilt man eine Rechnung auf, wenn mehrere bezahlt haben?",
         "a": "Trage jede Zahlung ein und wer daran beteiligt war. SplitWhom verrechnet, was jeder bezahlt hat, mit dem, was jeder schuldet, und zeigt dann die wenigsten Überweisungen, damit alle quitt sind."
       },

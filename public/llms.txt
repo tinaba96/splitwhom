@@ -1,0 +1,39 @@
+# SplitWhom
+
+> SplitWhom is a free, no-signup bill-splitting web app that works out the simplest way for a group to settle up — the fewest payments that make everyone even. It runs entirely in the browser: there is no account and no server, so expense data stays on the user's own device.
+
+## What it does
+- Splits shared expenses across a group when different people paid for different things.
+- Computes the minimal set of "who pays whom" transfers needed to clear all balances.
+- Lets you choose exactly which people share each individual expense.
+- Supports optional per-person spending caps (a maximum a given person will pay; the rest is shared among the others).
+- Handles multiple currencies (USD, EUR, JPY, CAD) with exact rounding, so no cent or yen is lost.
+- Produces a shareable, read-only summary link; the data is encoded in the link itself and is never stored on a server.
+
+## Key facts
+- Price: free. No account, no subscription, nothing to install.
+- Privacy: every calculation runs client-side in the browser; there is no login and no server-side storage.
+- Platform: any modern mobile or desktop web browser.
+- Languages: English, Japanese, Spanish, French, German, Portuguese, Italian, Chinese, Korean, Russian.
+- How it compares: unlike apps that require an account (e.g. Splitwise), SplitWhom needs no sign-up, installs nothing, and keeps data on your device while still minimizing the number of payments.
+
+## Common use cases
+- Trips and vacations
+- Camping and outdoor trips
+- Shared houses and roommates
+- Parties, BBQs, and group dinners
+
+## Links
+- Home (English): https://splitwhom.com/
+- Japanese: https://splitwhom.com/ja/
+- Spanish: https://splitwhom.com/es/
+- French: https://splitwhom.com/fr/
+- German: https://splitwhom.com/de/
+- Portuguese: https://splitwhom.com/pt/
+- Italian: https://splitwhom.com/it/
+- Chinese: https://splitwhom.com/zh/
+- Korean: https://splitwhom.com/ko/
+- Russian: https://splitwhom.com/ru/
+- About: https://splitwhom.com/about/
+- Privacy policy: https://splitwhom.com/privacy/
+- Terms: https://splitwhom.com/terms/
