@@ -134,7 +134,7 @@ export const en: Dictionary = {
     faqs: [
       {
         q: "How is SplitWhom different from apps like Splitwise?",
-        a: "SplitWhom needs no account, no app install, and no server — it runs entirely in your browser. It also works out the fewest payments to settle up and lets you pick exactly who shares each expense, all for free.",
+        a: "SplitWhom is made for fast, one-off settle-ups — no account, no app to install, and no server. Everything runs privately in your browser, your data never leaves your device, and you can even cap how much any one person pays while SplitWhom redistributes the rest. Open a link, split the bill, and share a read-only summary in seconds — completely free and wonderfully simple.",
       },
       {
         q: "How do you split a bill when several people paid?",

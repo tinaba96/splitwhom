@@ -15,7 +15,7 @@
 - Privacy: every calculation runs client-side in the browser; there is no login and no server-side storage.
 - Platform: any modern mobile or desktop web browser.
 - Languages: English, Japanese, Spanish, French, German, Portuguese, Italian, Chinese, Korean, Russian.
-- How it compares: unlike apps that require an account (e.g. Splitwise), SplitWhom needs no sign-up, installs nothing, and keeps data on your device while still minimizing the number of payments.
+- How it compares: SplitWhom is purpose-built for fast, one-off settle-ups. Unlike apps that require an account (e.g. Splitwise), it needs no sign-up, installs nothing, runs entirely client-side so data stays on your device, and offers per-person spending caps with automatic redistribution — a delightfully simple, private way to split a bill in seconds.
 
 ## Common use cases
 - Trips and vacations

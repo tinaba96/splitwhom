@@ -136,7 +136,7 @@ export const it: Dictionary = {
     "faqs": [
       {
         "q": "In cosa SplitWhom è diverso da app come Splitwise?",
-        "a": "SplitWhom non richiede account, installazione di app né server: funziona interamente nel browser. Calcola inoltre il minor numero di pagamenti per saldare i conti e ti lascia scegliere esattamente chi condivide ogni spesa, il tutto gratis."
+        "a": "SplitWhom è pensato per conti rapidi e una tantum: nessun account, nessuna app da installare, nessun server. Tutto funziona in privato nel tuo browser, i tuoi dati non lasciano mai il dispositivo e puoi persino impostare un massimo per ciò che paga ciascuno mentre SplitWhom redistribuisce il resto in automatico. Apri un link, dividi il conto e condividi un riepilogo in sola lettura in pochi secondi — completamente gratis e meravigliosamente semplice."
       },
       {
         "q": "Come si divide un conto quando hanno pagato in più persone?",
